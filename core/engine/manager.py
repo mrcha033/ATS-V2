@@ -4,6 +4,7 @@ import threading
 from typing import List, Dict
 from concurrent.futures import ThreadPoolExecutor
 from core.engine.trader import TraderEngine
+from core.config import config
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -11,14 +12,15 @@ logger = get_logger(__name__)
 class TraderManager:
     """멀티자산 트레이딩 매니저"""
     
-    def __init__(self, config_file: str = "config/assets.json", dry_run: bool = True):
+    def __init__(self, config_file: str = "config/assets.json", dry_run: bool = None):
         self.config_file = config_file
-        self.dry_run = dry_run
+        # 환경변수에서 설정 가져오기
+        self.dry_run = dry_run if dry_run is not None else config.dry_run
         self.engines = {}
         self.is_running = False
         self.worker_threads = {}
-        self.status_update_interval = 300  # 5분마다 상태 업데이트
-        self.run_interval = 10  # 10초마다 실행
+        self.status_update_interval = config.status_update_interval
+        self.run_interval = config.polling_interval
         
         self._load_assets()
         logger.info(f"트레이딩 매니저 초기화 완료: {len(self.engines)}개 자산")

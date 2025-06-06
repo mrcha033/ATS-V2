@@ -308,3 +308,94 @@
 2025-06-06 12:46:56 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6369
 2025-06-06 12:46:56 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102478.1600
 2025-06-06 12:46:56 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2450.8100
+2025-06-06 12:47:06 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6368
+2025-06-06 12:47:06 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102478.1600
+2025-06-06 12:47:06 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2450.7700
+2025-06-06 12:47:16 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6368
+2025-06-06 12:47:16 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102478.1500
+2025-06-06 12:47:16 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2450.7600
+2025-06-06 12:47:16 [INFO] ATS_V2_Main: 시스템 정상 동작 중: 3/3 엔진 활성
+2025-06-06 12:47:18 [INFO] ATS_V2_Main: 시그널 2 수신, 종료 준비 중...
+2025-06-06 12:47:18 [INFO] core.engine.manager: 트레이딩 매니저 중지 중...
+2025-06-06 12:47:18 [INFO] core.executor: [BTC/USDT] 모의 주문 취소
+2025-06-06 12:47:18 [INFO] core.engine.trader: [BTC/USDT] 트레이딩 엔진 중지
+2025-06-06 12:47:18 [INFO] core.executor: [ETH/USDT] 모의 주문 취소
+2025-06-06 12:47:18 [INFO] core.engine.trader: [ETH/USDT] 트레이딩 엔진 중지
+2025-06-06 12:47:18 [INFO] core.executor: [ADA/USDT] 모의 주문 취소
+2025-06-06 12:47:18 [INFO] core.engine.trader: [ADA/USDT] 트레이딩 엔진 중지
+2025-06-06 12:47:22 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102478.1600
+2025-06-06 12:47:22 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2450.6100
+2025-06-06 12:47:22 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6368
+2025-06-06 12:47:22 [INFO] ATS_V2_Main: 시스템 정상 동작 중: 3/3 엔진 활성
+2025-06-06 12:47:28 [INFO] core.engine.manager: [BTC/USDT] 엔진 루프 종료
+2025-06-06 12:47:28 [INFO] core.engine.manager: [ADA/USDT] 엔진 루프 종료
+2025-06-06 12:47:28 [INFO] core.engine.manager: [ETH/USDT] 엔진 루프 종료
+2025-06-06 12:47:28 [INFO] core.engine.manager: 트레이딩 매니저 중지 완료
+2025-06-06 12:47:28 [INFO] ATS_V2_Main: 시스템 종료 중...
+2025-06-06 12:47:28 [INFO] ATS_V2_Main: === ATS v2 종료 완료 ===
+2025-06-06 12:47:36 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6369
+2025-06-06 12:47:36 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102478.1700
+2025-06-06 12:47:36 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2451.8000
+2025-06-06 12:47:46 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6371
+2025-06-06 12:47:46 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102499.9900
+2025-06-06 12:47:46 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.9900
+2025-06-06 12:47:56 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102499.9900
+2025-06-06 12:47:56 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6370
+2025-06-06 12:47:56 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2453.1100
+2025-06-06 12:48:06 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6367
+2025-06-06 12:48:06 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102486.8500
+2025-06-06 12:48:06 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.2800
+2025-06-06 12:48:16 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102486.8500
+2025-06-06 12:48:16 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6369
+2025-06-06 12:48:16 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.7900
+2025-06-06 12:48:22 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102486.8500
+2025-06-06 12:48:22 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2453.1900
+2025-06-06 12:48:22 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6370
+2025-06-06 12:48:22 [INFO] ATS_V2_Main: 시스템 정상 동작 중: 3/3 엔진 활성
+2025-06-06 12:48:36 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102486.8400
+2025-06-06 12:48:36 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6369
+2025-06-06 12:48:37 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.9300
+2025-06-06 12:48:47 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6366
+2025-06-06 12:48:47 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102486.8400
+2025-06-06 12:48:47 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.6100
+2025-06-06 12:48:57 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102500.0000
+2025-06-06 12:48:57 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6365
+2025-06-06 12:48:57 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.9500
+2025-06-06 12:49:07 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102500.0000
+2025-06-06 12:49:07 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6365
+2025-06-06 12:49:07 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2453.4100
+2025-06-06 12:49:17 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102500.0000
+2025-06-06 12:49:17 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6363
+2025-06-06 12:49:17 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.5600
+2025-06-06 12:49:23 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102501.6800
+2025-06-06 12:49:23 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2453.2700
+2025-06-06 12:49:23 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6364
+2025-06-06 12:49:23 [INFO] ATS_V2_Main: 시스템 정상 동작 중: 3/3 엔진 활성
+2025-06-06 12:49:37 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6366
+2025-06-06 12:49:37 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102514.8000
+2025-06-06 12:49:37 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2453.8800
+2025-06-06 12:49:47 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102508.3800
+2025-06-06 12:49:47 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6360
+2025-06-06 12:49:47 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.0100
+2025-06-06 12:49:57 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6361
+2025-06-06 12:49:57 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102511.6300
+2025-06-06 12:49:57 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.3300
+2025-06-06 12:50:07 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6359
+2025-06-06 12:50:07 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102511.6100
+2025-06-06 12:50:07 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2451.6200
+2025-06-06 12:50:17 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6359
+2025-06-06 12:50:17 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102484.2000
+2025-06-06 12:50:17 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2451.2200
+2025-06-06 12:50:23 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102484.2000
+2025-06-06 12:50:23 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2451.2500
+2025-06-06 12:50:23 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6359
+2025-06-06 12:50:23 [INFO] ATS_V2_Main: 시스템 정상 동작 중: 3/3 엔진 활성
+2025-06-06 12:50:37 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102503.6100
+2025-06-06 12:50:37 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6364
+2025-06-06 12:50:37 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2453.0000
+2025-06-06 12:50:48 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6364
+2025-06-06 12:50:48 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102507.3000
+2025-06-06 12:50:48 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.5000
+2025-06-06 12:50:58 [INFO] core.data_collector: [ADA/USDT] 가격 조회: $0.6364
+2025-06-06 12:50:58 [INFO] core.data_collector: [BTC/USDT] 가격 조회: $102507.3000
+2025-06-06 12:50:58 [INFO] core.data_collector: [ETH/USDT] 가격 조회: $2452.1800

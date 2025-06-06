@@ -1,50 +1,41 @@
 import time
-import json
 from typing import Optional, Dict
 from utils.logger import get_logger
 from core.upbit_client import UpbitClient
+from core.config import config
 
 logger = get_logger(__name__)
 
 class Executor:
     """자산별 주문 실행기"""
     
-    def __init__(self, symbol: str, trade_amount: float, dry_run: bool = True, use_upbit: bool = False):
+    def __init__(self, symbol: str, trade_amount: float, dry_run: bool = None, use_upbit: bool = True):
         self.symbol = symbol
         self.trade_amount = trade_amount
-        self.dry_run = dry_run
+        # 환경변수에서 dry_run 설정 가져오기
+        self.dry_run = dry_run if dry_run is not None else config.dry_run
         self.use_upbit = use_upbit
         self.order_history = []
         self.last_order_time = 0
         self.min_order_interval = 30  # 최소 주문 간격 (초)
+        self.market_mapping = config.get_market_mapping()
+        self.min_order_amounts = config.get_min_order_amounts()
         
-        # 업비트 설정 로드
-        if use_upbit:
-            self._load_upbit_config()
-    
-    def _load_upbit_config(self):
-        """업비트 설정 로드"""
-        try:
-            with open('config/upbit_config.json', 'r', encoding='utf-8') as f:
-                self.upbit_config = json.load(f)
-            
-            # 실제 거래용 업비트 클라이언트
-            if (self.upbit_config.get('access_key') != 'YOUR_UPBIT_ACCESS_KEY' and 
-                self.upbit_config.get('secret_key') != 'YOUR_UPBIT_SECRET_KEY' and 
-                not self.dry_run):
-                self.upbit_client = UpbitClient(
-                    self.upbit_config['access_key'],
-                    self.upbit_config['secret_key']
-                )
+        # 업비트 클라이언트 초기화
+        if use_upbit and not self.dry_run and config.has_api_keys:
+            try:
+                self.upbit_client = UpbitClient()
                 logger.info(f"[{self.symbol}] 업비트 실제 거래 모드 활성화")
-            else:
+            except Exception as e:
+                logger.error(f"[{self.symbol}] 업비트 클라이언트 초기화 실패: {e}")
+                logger.warning(f"[{self.symbol}] 모의거래 모드로 전환")
                 self.upbit_client = None
-                logger.info(f"[{self.symbol}] 모의거래 모드")
-                
-        except Exception as e:
-            logger.error(f"업비트 설정 로드 실패: {e}")
-            self.upbit_config = {}
+                self.dry_run = True
+        else:
             self.upbit_client = None
+            logger.info(f"[{self.symbol}] 모의거래 모드")
+    
+
     
     def _can_place_order(self) -> bool:
         """주문 가능 여부 체크"""
@@ -119,7 +110,7 @@ class Executor:
             raise Exception("업비트 클라이언트가 초기화되지 않음")
         
         # 심볼을 업비트 마켓으로 변환
-        upbit_market = self.upbit_config.get('market_mapping', {}).get(self.symbol)
+        upbit_market = self.market_mapping.get(self.symbol)
         if not upbit_market:
             raise Exception(f"업비트 마켓 매핑을 찾을 수 없음: {self.symbol}")
         
@@ -129,7 +120,7 @@ class Executor:
         if order_type == 'buy':
             # 매수: 금액 기준으로 주문 (시장가)
             order_amount = quantity * price
-            min_amount = self.upbit_config.get('min_order_amounts', {}).get(upbit_market, 5000)
+            min_amount = self.min_order_amounts.get(upbit_market, 5000)
             
             if order_amount < min_amount:
                 logger.warning(f"최소 주문 금액 미달: {order_amount} < {min_amount}")

@@ -42,32 +42,52 @@ ats_v2/
 pip install -r requirements.txt
 ```
 
-2. **업비트 API 연동** (실제 거래용):
+2. **환경변수 설정**:
 ```bash
+# example.env를 .env로 복사하여 수정
+cp example.env .env
+
+# 또는 자동 설정 스크립트 실행
 python setup_upbit.py
 ```
 
-3. **자산 설정**: `config/assets.json`에서 거래할 자산 설정
+3. **업비트 API 키 설정** (.env 파일에서):
+```bash
+UPBIT_ACCESS_KEY=your_actual_access_key
+UPBIT_SECRET_KEY=your_actual_secret_key
+DRY_RUN=false  # 실제 거래시
+```
 
 4. **실행**:
 ```bash
-# 모의거래 (기본값)
 python main.py
-
-# 실제 거래 (업비트 API 설정 필요)
-# main.py에서 dry_run=False로 변경
 ```
 
 ## ⚙️ 설정
+
+### 환경변수 설정 (.env 파일)
+```bash
+# 업비트 API 설정
+UPBIT_ACCESS_KEY=your_upbit_access_key
+UPBIT_SECRET_KEY=your_upbit_secret_key
+
+# 거래 설정
+DRY_RUN=true          # 모의거래(true) / 실제거래(false)
+LOG_LEVEL=INFO        # 로그 레벨
+
+# 시스템 설정
+POLLING_INTERVAL=10   # 가격 조회 간격(초)
+STATUS_UPDATE_INTERVAL=300  # 상태 알림 간격(초)
+```
 
 ### 자산 설정 (config/assets.json)
 ```json
 [
   {
     "symbol": "BTC/USDT",
-    "base_currency": "BTC",
-    "quote_currency": "USDT",
-    "trade_amount": 0.001
+    "base_currency": "BTC", 
+    "quote_currency": "KRW",
+    "trade_amount": 10000
   }
 ]
 ```
@@ -94,13 +114,18 @@ python main.py
 ### API 키 발급
 1. [업비트 Open API 관리](https://upbit.com/mypage/open_api_management)에서 API 키 발급
 2. 권한 설정: 자산 조회, 주문 조회, 주문하기 체크
-3. `python setup_upbit.py` 실행하여 API 키 설정
+3. `python setup_upbit.py` 실행하여 환경변수 설정
 
 ### 실제 거래 활성화
-`main.py`에서 `dry_run=False`로 변경:
-```python
-manager = TraderManager(dry_run=False)  # 실제 거래 모드
+`.env` 파일에서 `DRY_RUN=false`로 변경:
+```bash
+DRY_RUN=false  # 실제 거래 모드
 ```
+
+### 보안 관리
+- **환경변수 기반**: API 키를 안전하게 관리
+- **Git 제외**: .env 파일은 Git에 업로드되지 않음  
+- **자동 검증**: 설정 시 API 연결 테스트 자동 실행
 
 ## 📈 확장 가능성
 

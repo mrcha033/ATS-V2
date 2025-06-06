@@ -7,6 +7,7 @@ import signal
 import sys
 import time
 from core.engine.manager import TraderManager
+from core.config import config
 from utils.logger import get_logger
 
 logger = get_logger("ATS_V2_Main")
@@ -27,9 +28,17 @@ def main():
     logger.info("=== ATS v2 멀티자산 트레이딩 시스템 시작 ===")
     
     try:
-        # 트레이딩 매니저 초기화
+        # 트레이딩 매니저 초기화 (환경변수 기반)
         global manager
-        manager = TraderManager(dry_run=True)  # 기본값은 모의거래
+        manager = TraderManager()  # 환경변수에서 설정 로드
+        
+        # 현재 모드 출력
+        mode = "모의거래" if config.dry_run else "실제거래"
+        logger.info(f"거래 모드: {mode}")
+        if config.has_api_keys:
+            logger.info("업비트 API 키 설정 확인됨")
+        else:
+            logger.warning("업비트 API 키 미설정 - 모의거래만 가능")
         
         # 시스템 시작
         manager.start()

@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-업비트 API 연동 설정 스크립트
+업비트 API 연동 설정 스크립트 (환경변수 기반)
 """
 
-import json
 import os
 from getpass import getpass
 
-def setup_upbit_config():
-    """업비트 API 설정"""
-    print("=== 업비트 API 연동 설정 ===")
+def setup_env_file():
+    """환경변수 파일 설정"""
+    print("=== 업비트 API 연동 설정 (환경변수 기반) ===")
     print("업비트 Open API에서 발급받은 키를 입력해주세요.")
     print("https://upbit.com/mypage/open_api_management")
     print()
@@ -21,34 +20,38 @@ def setup_upbit_config():
         print("❌ Access Key와 Secret Key를 모두 입력해주세요.")
         return False
     
-    config = {
-        "access_key": access_key,
-        "secret_key": secret_key,
-        "market_mapping": {
-            "BTC/USDT": "KRW-BTC",
-            "ETH/USDT": "KRW-ETH",
-            "ADA/USDT": "KRW-ADA"
-        },
-        "min_order_amounts": {
-            "KRW-BTC": 5000,
-            "KRW-ETH": 5000,
-            "KRW-ADA": 5000
-        }
-    }
+    # .env 파일 생성
+    env_content = f"""# 업비트 API 설정
+UPBIT_ACCESS_KEY={access_key}
+UPBIT_SECRET_KEY={secret_key}
+
+# 거래 설정
+DRY_RUN=true
+LOG_LEVEL=INFO
+
+# 알림 설정 (선택사항)
+DISCORD_WEBHOOK_URL=
+SLACK_WEBHOOK_URL=
+
+# 시스템 설정
+POLLING_INTERVAL=10
+STATUS_UPDATE_INTERVAL=300
+"""
     
-    # 설정 저장
-    config_dir = "config"
-    os.makedirs(config_dir, exist_ok=True)
+    # .env 파일 저장
+    with open('.env', 'w', encoding='utf-8') as f:
+        f.write(env_content)
     
-    config_file = os.path.join(config_dir, "upbit_config.json")
-    with open(config_file, 'w', encoding='utf-8') as f:
-        json.dump(config, f, indent=2, ensure_ascii=False)
-    
-    print(f"✅ 업비트 설정이 저장되었습니다: {config_file}")
+    print("✅ .env 파일이 생성되었습니다")
     
     # API 연결 테스트
     print("\n📡 API 연결 테스트 중...")
     try:
+        # 환경변수 로드
+        import os
+        os.environ['UPBIT_ACCESS_KEY'] = access_key
+        os.environ['UPBIT_SECRET_KEY'] = secret_key
+        
         from core.upbit_client import UpbitClient
         
         client = UpbitClient(access_key, secret_key)
@@ -81,16 +84,30 @@ def setup_upbit_config():
     
     return True
 
+def show_usage():
+    """사용법 안내"""
+    print("\n📚 사용법:")
+    print("1. 실제 거래를 원한다면 .env 파일에서 DRY_RUN=false로 변경")
+    print("2. python main.py 실행")
+    print()
+    print("🔧 환경변수 설정:")
+    print("- DRY_RUN: 모의거래(true) / 실제거래(false)")
+    print("- LOG_LEVEL: DEBUG, INFO, WARNING, ERROR")
+    print("- POLLING_INTERVAL: 가격 조회 간격(초)")
+    print("- STATUS_UPDATE_INTERVAL: 상태 알림 간격(초)")
+
 def main():
-    print("🚀 ATS v2 업비트 연동 설정")
+    print("🚀 ATS v2 업비트 연동 설정 (환경변수 기반)")
     
-    if setup_upbit_config():
+    if setup_env_file():
         print("\n🎉 설정이 완료되었습니다!")
-        print("이제 main.py를 실행하여 실제 거래를 시작할 수 있습니다.")
+        show_usage()
         print("\n⚠️  주의사항:")
+        print("- .env 파일에는 민감한 정보가 포함되어 있습니다")
+        print("- .env 파일을 절대 공개하지 마세요")
+        print("- Git에 커밋하지 않도록 주의하세요")
         print("- 모의거래에서 충분히 테스트 후 실제 거래를 진행하세요")
         print("- 투자는 본인 책임하에 진행하세요")
-        print("- 손실 가능성을 충분히 고려하세요")
     else:
         print("\n❌ 설정에 실패했습니다. 다시 시도해주세요.")
 

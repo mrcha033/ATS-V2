@@ -1,8 +1,8 @@
 import time
 import requests
-import json
 from typing import Dict, Optional
 from utils.logger import get_logger
+from core.config import config
 
 logger = get_logger(__name__)
 
@@ -12,17 +12,8 @@ class DataCollector:
     def __init__(self):
         self.price_cache = {}
         self.last_update = {}
-        self._load_upbit_config()
-    
-    def _load_upbit_config(self):
-        """업비트 설정 로드"""
-        try:
-            with open('config/upbit_config.json', 'r', encoding='utf-8') as f:
-                self.upbit_config = json.load(f)
-            logger.info("업비트 설정 로드 완료")
-        except Exception as e:
-            logger.error(f"업비트 설정 로드 실패: {e}")
-            self.upbit_config = {}
+        self.market_mapping = config.get_market_mapping()
+        logger.info("업비트 데이터 수집기 초기화 완료")
     
     def get_price(self, symbol: str) -> Optional[float]:
         """업비트에서 현재 가격 조회"""
@@ -51,7 +42,7 @@ class DataCollector:
         """업비트에서 가격 조회"""
         try:
             # 심볼을 업비트 마켓으로 매핑
-            upbit_market = self.upbit_config.get('market_mapping', {}).get(symbol)
+            upbit_market = self.market_mapping.get(symbol)
             if not upbit_market:
                 logger.warning(f"[{symbol}] 업비트 마켓 매핑 없음")
                 return None
@@ -84,7 +75,7 @@ class DataCollector:
     def get_market_info(self, symbol: str) -> Optional[Dict]:
         """업비트 마켓 정보 조회"""
         try:
-            upbit_market = self.upbit_config.get('market_mapping', {}).get(symbol)
+            upbit_market = self.market_mapping.get(symbol)
             if not upbit_market:
                 return None
             

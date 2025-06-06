@@ -5,6 +5,7 @@ from core.portfolio import Portfolio
 from core.trigger import Trigger
 from core.executor import Executor
 from core.notifier import Notifier
+from core.config import config
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -12,18 +13,19 @@ logger = get_logger(__name__)
 class TraderEngine:
     """자산별 독립 트레이딩 엔진"""
     
-    def __init__(self, asset_config: Dict, dry_run: bool = True):
+    def __init__(self, asset_config: Dict, dry_run: bool = None):
         self.symbol = asset_config["symbol"]
         self.base_currency = asset_config["base_currency"]
         self.quote_currency = asset_config["quote_currency"]
         self.trade_amount = asset_config["trade_amount"]
-        self.dry_run = dry_run
+        # 환경변수에서 dry_run 설정 가져오기
+        self.dry_run = dry_run if dry_run is not None else config.dry_run
         
         # 모듈 인스턴스 초기화 (업비트 전용)
         self.data_collector = DataCollector()
         self.portfolio = Portfolio(self.symbol)
         self.trigger = Trigger(self.symbol)
-        self.executor = Executor(self.symbol, self.trade_amount, dry_run, use_upbit=True)
+        self.executor = Executor(self.symbol, self.trade_amount, self.dry_run, use_upbit=True)
         self.notifier = Notifier(self.symbol)
         
         # 상태 변수

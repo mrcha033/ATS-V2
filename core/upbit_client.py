@@ -6,17 +6,24 @@ import time
 from urllib.parse import urlencode
 from typing import Dict, List, Optional
 from utils.logger import get_logger
+from core.config import config
 
 logger = get_logger(__name__)
 
 class UpbitClient:
     """업비트 API 클라이언트"""
     
-    def __init__(self, access_key: str, secret_key: str):
-        self.access_key = access_key
-        self.secret_key = secret_key
+    def __init__(self, access_key: str = None, secret_key: str = None):
+        # 환경변수에서 API 키 가져오기
+        self.access_key = access_key or config.upbit_access_key
+        self.secret_key = secret_key or config.upbit_secret_key
+        
+        if not self.access_key or not self.secret_key:
+            raise ValueError("업비트 API 키가 설정되지 않았습니다. .env 파일을 확인하세요.")
+        
         self.base_url = "https://api.upbit.com"
         self.session = requests.Session()
+        logger.info("업비트 클라이언트 초기화 완료")
     
     def _generate_jwt_token(self, query_params: Dict = None) -> str:
         """JWT 토큰 생성"""
