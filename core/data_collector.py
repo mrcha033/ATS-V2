@@ -1,6 +1,6 @@
 import time
 import requests
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from utils.logger import get_logger
 from core.config import config
 
@@ -64,12 +64,78 @@ class DataCollector:
         except Exception as e:
             logger.error(f"[{symbol}] 업비트 가격 조회 실패: {e}")
             return None
+
+    def _get_upbit_prices(self, symbols: List[str]) -> Dict[str, Optional[float]]:
+        """여러 심볼의 가격을 한번에 조회"""
+        results: Dict[str, Optional[float]] = {}
+        try:
+            symbol_to_market = {}
+            markets = []
+            for symbol in symbols:
+                market = self.market_mapping.get(symbol)
+                if not market:
+                    logger.warning(f"[{symbol}] 업비트 마켓 매핑 없음")
+                    results[symbol] = None
+                    continue
+                symbol_to_market[market] = symbol
+                markets.append(market)
+
+            if not markets:
+                return results
+
+            url = "https://api.upbit.com/v1/ticker"
+            params = {"markets": ",".join(markets)}
+            logger.debug(f"업비트 배치 가격 조회: {params['markets']}")
+
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+
+            for item in data:
+                market = item.get("market")
+                price = float(item.get("trade_price")) if item.get("trade_price") is not None else None
+                symbol = symbol_to_market.get(market)
+                if symbol:
+                    results[symbol] = price
+
+            # 반환되지 않은 심볼은 None 처리
+            for symbol in symbols:
+                results.setdefault(symbol, None)
+
+        except Exception as e:
+            logger.error(f"배치 가격 조회 실패: {e}")
+            for symbol in symbols:
+                results.setdefault(symbol, None)
+
+        return results
     
     def get_multiple_prices(self, symbols: list) -> Dict[str, Optional[float]]:
         """여러 심볼의 가격을 동시에 조회"""
-        prices = {}
+        prices: Dict[str, Optional[float]] = {}
+        fetch_symbols: List[str] = []
+
+        # 캐시 확인
         for symbol in symbols:
-            prices[symbol] = self.get_price(symbol)
+            if (
+                symbol in self.price_cache
+                and symbol in self.last_update
+                and time.time() - self.last_update[symbol] < 5
+            ):
+                prices[symbol] = self.price_cache[symbol]
+            else:
+                fetch_symbols.append(symbol)
+
+        if fetch_symbols:
+            fetched = self._get_upbit_prices(fetch_symbols)
+            logger.debug(
+                f"배치 조회 사용: {', '.join(fetch_symbols)}"
+            )
+            for sym, price in fetched.items():
+                if price is not None:
+                    self.price_cache[sym] = price
+                    self.last_update[sym] = time.time()
+                prices[sym] = price
+
         return prices
     
     def get_market_info(self, symbol: str) -> Optional[Dict]:
