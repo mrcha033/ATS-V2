@@ -93,8 +93,9 @@ class TraderEngine:
     def _execute_sell(self, price: float):
         """매도 실행"""
         try:
-            # 전체 보유량 매도
-            quantity = self.portfolio.holdings
+            # 보유량의 일부만 매도
+            sell_ratio = self.trigger.config.get("sell_ratio", 1.0)
+            quantity = self.portfolio.holdings * sell_ratio
             if quantity > 0:
                 order = self.executor.sell(quantity, price)
                 if order:
