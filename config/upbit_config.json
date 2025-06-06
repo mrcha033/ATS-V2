@@ -1,0 +1,14 @@
+{
+  "access_key": "YOUR_UPBIT_ACCESS_KEY",
+  "secret_key": "YOUR_UPBIT_SECRET_KEY",
+  "market_mapping": {
+    "BTC/USDT": "KRW-BTC",
+    "ETH/USDT": "KRW-ETH", 
+    "ADA/USDT": "KRW-ADA"
+  },
+  "min_order_amounts": {
+    "KRW-BTC": 5000,
+    "KRW-ETH": 5000,
+    "KRW-ADA": 5000
+  }
+} 
