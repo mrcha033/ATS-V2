@@ -2,7 +2,7 @@ import json
 import time
 import threading
 from typing import List, Dict
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, Future
 from core.engine.trader import TraderEngine
 from core.config import config
 from utils.logger import get_logger
@@ -10,7 +10,10 @@ from utils.logger import get_logger
 logger = get_logger(__name__)
 
 class TraderManager:
-    """멀티자산 트레이딩 매니저"""
+    """멀티자산 트레이딩 매니저
+
+    각 자산별 엔진을 ThreadPoolExecutor에서 병렬로 실행한다.
+    """
     
     def __init__(self, config_file: str = "config/assets.json", dry_run: bool = None):
         self.config_file = config_file
@@ -18,11 +21,13 @@ class TraderManager:
         self.dry_run = dry_run if dry_run is not None else config.dry_run
         self.engines = {}
         self.is_running = False
-        self.worker_threads = {}
+        self.engine_futures: Dict[str, Future] = {}
+        self.executor: ThreadPoolExecutor | None = None
         self.status_update_interval = config.status_update_interval
         self.run_interval = config.polling_interval
-        
+
         self._load_assets()
+        self.max_workers = config.max_workers or len(self.engines)
         logger.info(f"트레이딩 매니저 초기화 완료: {len(self.engines)}개 자산")
     
     def _load_assets(self):
@@ -72,25 +77,21 @@ class TraderManager:
         for symbol, engine in self.engines.items():
             engine.stop()
         
-        # 워커 쓰레드 종료 대기
-        for symbol, thread in self.worker_threads.items():
-            if thread.is_alive():
-                thread.join(timeout=5)
-        
+        # 풀 종료 대기
+        if self.executor:
+            self.executor.shutdown(wait=True)
+            self.executor = None
+            self.engine_futures.clear()
+
         logger.info("트레이딩 매니저 중지 완료")
-    
+
     def _start_parallel_execution(self):
-        """병렬 실행 시작"""
+        """병렬 실행 시작 (ThreadPoolExecutor 사용)"""
+        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
         for symbol, engine in self.engines.items():
-            thread = threading.Thread(
-                target=self._run_engine_loop,
-                args=(symbol, engine),
-                name=f"Trader-{symbol}",
-                daemon=True
-            )
-            thread.start()
-            self.worker_threads[symbol] = thread
-            logger.info(f"[{symbol}] 워커 쓰레드 시작")
+            future = self.executor.submit(self._run_engine_loop, symbol, engine)
+            self.engine_futures[symbol] = future
+            logger.info(f"[{symbol}] 엔진 작업 제출")
     
     def _run_engine_loop(self, symbol: str, engine: TraderEngine):
         """개별 엔진 실행 루프"""
@@ -143,7 +144,7 @@ class TraderManager:
             "manager": {
                 "is_running": self.is_running,
                 "total_engines": len(self.engines),
-                "active_threads": sum(1 for t in self.worker_threads.values() if t.is_alive()),
+                "active_threads": sum(1 for f in self.engine_futures.values() if not f.done()),
                 "dry_run": self.dry_run
             },
             "engines": {}
@@ -176,6 +177,10 @@ class TraderManager:
         # 기존 엔진 중지
         for engine in self.engines.values():
             engine.stop()
+        if self.executor:
+            self.executor.shutdown(wait=True)
+            self.executor = None
+            self.engine_futures.clear()
         
         # 새 설정 로드
         self.engines.clear()
@@ -201,14 +206,11 @@ class TraderManager:
         
         if self.is_running:
             engine.start()
-            thread = threading.Thread(
-                target=self._run_engine_loop,
-                args=(symbol, engine),
-                name=f"Trader-{symbol}",
-                daemon=True
-            )
-            thread.start()
-            self.worker_threads[symbol] = thread
+            if self.executor is None:
+                self._start_parallel_execution()
+            else:
+                future = self.executor.submit(self._run_engine_loop, symbol, engine)
+                self.engine_futures[symbol] = future
         
         logger.info(f"[{symbol}] 새 자산 추가 완료")
     
@@ -221,12 +223,13 @@ class TraderManager:
         # 엔진 중지
         self.engines[symbol].stop()
         
-        # 쓰레드 종료
-        if symbol in self.worker_threads:
-            thread = self.worker_threads[symbol]
-            if thread.is_alive():
-                thread.join(timeout=5)
-            del self.worker_threads[symbol]
+        # 실행 중인 Future 종료 대기
+        if symbol in self.engine_futures:
+            future = self.engine_futures.pop(symbol)
+            try:
+                future.result(timeout=5)
+            except Exception:
+                pass
         
         # 엔진 제거
         del self.engines[symbol]

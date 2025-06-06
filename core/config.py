@@ -62,6 +62,12 @@ class Config:
     def status_update_interval(self) -> int:
         """상태 업데이트 간격 (초)"""
         return int(os.getenv('STATUS_UPDATE_INTERVAL', '300'))
+
+    @property
+    def max_workers(self) -> Optional[int]:
+        """병렬 실행 스레드 수"""
+        value = os.getenv('MAX_WORKERS')
+        return int(value) if value and value.isdigit() else None
     
     @property
     def discord_webhook_url(self) -> Optional[str]:
