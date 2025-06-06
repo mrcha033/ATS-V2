@@ -17,8 +17,8 @@ class Trigger:
         """기본 설정"""
         return {
             "buy_drop_threshold": -0.02,  # 2% 하락시 매수
-            "sell_profit_threshold": 0.03,  # 3% 수익시 매도
-            "stop_loss_threshold": -0.05,  # 5% 손실시 손절
+            "sell_profit_threshold": 0.0,  # 평단가 이상이면 매도
+            "sell_ratio": 0.2,  # 매도 비율
             "min_interval_minutes": 5,  # 최소 거래 간격
             "max_position_ratio": 0.8  # 최대 포지션 비율
         }
@@ -53,16 +53,11 @@ class Trigger:
         
         profit, profit_rate = portfolio.get_profit_loss(current_price)
         
-        # 수익 실현 체크
+        # 수익 실현 체크 (평단가 이상)
         if profit_rate >= self.config["sell_profit_threshold"] * 100:
             logger.info(f"[{self.symbol}] 매도 시그널: {profit_rate:.2f}% 수익")
             return True
-        
-        # 손절 체크
-        if profit_rate <= self.config["stop_loss_threshold"] * 100:
-            logger.info(f"[{self.symbol}] 손절 시그널: {profit_rate:.2f}% 손실")
-            return True
-        
+
         return False
     
     def check(self, current_price: float, portfolio) -> Optional[str]:
